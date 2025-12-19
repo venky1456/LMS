@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../api';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const MentorCourseProgress = () => {
@@ -14,7 +14,7 @@ const MentorCourseProgress = () => {
   useEffect(() => {
     const fetchProgress = async () => {
       try {
-        const res = await api.get(`/api/progress/course/${courseId}/students`);
+        const res = await axios.get(`/api/progress/course/${courseId}/students`);
         setCourse(res.data.course);
         setStudents(res.data.students || []);
         setTotalChapters(res.data.totalChapters || 0);

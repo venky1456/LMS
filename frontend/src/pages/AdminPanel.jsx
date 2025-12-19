@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import api from '../api';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import './AdminPanel.css';
 
@@ -60,7 +60,7 @@ const AdminPanel = () => {
 
   const fetchAnalytics = async () => {
     try {
-      const res = await api.get('/api/analytics/summary');
+      const res = await axios.get('/api/analytics/summary');
       setAnalytics(res.data);
     } catch (error) {
       console.error('Failed to fetch analytics:', error);
@@ -70,7 +70,7 @@ const AdminPanel = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/api/users');
+      const response = await axios.get('/api/users');
       setUsers(response.data);
     } catch (error) {
       toast.error('Failed to fetch users');
@@ -88,7 +88,7 @@ const AdminPanel = () => {
       if (progressStatusFilter !== 'all') params.progressStatus = progressStatusFilter;
       if (completionLevelFilter !== 'all') params.completionLevel = completionLevelFilter;
 
-      const response = await api.get('/api/analytics/students/progress', { params });
+      const response = await axios.get('/api/analytics/students/progress', { params });
       setStudents(response.data.students || []);
     } catch (error) {
       toast.error('Failed to fetch student progress');
@@ -100,7 +100,7 @@ const AdminPanel = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await api.get('/api/courses/my');
+      const response = await axios.get('/api/courses/my');
       setCourses(response.data);
     } catch (error) {
       console.error('Failed to fetch courses:', error);
@@ -110,7 +110,7 @@ const AdminPanel = () => {
   const fetchAllCourses = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/api/courses/my');
+      const response = await axios.get('/api/courses/my');
       setAllCourses(response.data);
     } catch (error) {
       toast.error('Failed to fetch courses');
@@ -123,7 +123,7 @@ const AdminPanel = () => {
   const fetchMentors = async () => {
     try {
       setLoading(true);
-      const response = await api.get('/api/analytics/mentors/activity');
+      const response = await axios.get('/api/analytics/mentors/activity');
       setMentors(response.data.mentors || []);
     } catch (error) {
       toast.error('Failed to fetch mentor activity');
@@ -135,7 +135,7 @@ const AdminPanel = () => {
 
   const handleApproveMentor = async (userId, isApproved) => {
     try {
-      await api.put(`/api/users/${userId}/approve-mentor`, { isApproved });
+      await axios.put(`/api/users/${userId}/approve-mentor`, { isApproved });
       toast.success(`Mentor ${isApproved ? 'approved' : 'rejected'} successfully`);
       fetchUsers();
     } catch (error) {
@@ -145,7 +145,7 @@ const AdminPanel = () => {
 
   const handleActivateUser = async (userId, isActive) => {
     try {
-      await api.put(`/api/users/${userId}/activate`, { isActive });
+      await axios.put(`/api/users/${userId}/activate`, { isActive });
       toast.success(`User ${isActive ? 'activated' : 'deactivated'} successfully`);
       fetchUsers();
     } catch (error) {
@@ -160,7 +160,7 @@ const AdminPanel = () => {
 
   const handleSaveUser = async () => {
     try {
-      await api.put(`/api/users/${editingUser}`, editForm);
+      await axios.put(`/api/users/${editingUser}`, editForm);
       toast.success('User updated successfully');
       setEditingUser(null);
       fetchUsers();
@@ -175,7 +175,7 @@ const AdminPanel = () => {
     }
 
     try {
-      await api.delete(`/api/users/${userId}`);
+      await axios.delete(`/api/users/${userId}`);
       toast.success('User deleted successfully');
       fetchUsers();
     } catch (error) {
@@ -185,7 +185,7 @@ const AdminPanel = () => {
 
   const handleActivateCourse = async (courseId, isActive) => {
     try {
-      await api.put(`/api/courses/${courseId}/activate`, { isActive });
+      await axios.put(`/api/courses/${courseId}/activate`, { isActive });
       toast.success(`Course ${isActive ? 'activated' : 'deactivated'} successfully`);
       fetchAllCourses();
     } catch (error) {
@@ -199,7 +199,7 @@ const AdminPanel = () => {
         toast.error('Please select at least one student');
         return;
       }
-      await api.post(`/api/courses/${courseId}/assign`, {
+      await axios.post(`/api/courses/${courseId}/assign`, {
         studentIds: selectedStudents,
       });
       toast.success('Course assigned successfully');
@@ -213,7 +213,7 @@ const AdminPanel = () => {
 
   const handleReassignCourse = async (courseId) => {
     try {
-      await api.put(`/api/courses/${courseId}/assign`, {
+      await axios.put(`/api/courses/${courseId}/assign`, {
         studentIds: selectedStudents,
       });
       toast.success('Course reassigned successfully');
@@ -231,7 +231,7 @@ const AdminPanel = () => {
     }
 
     try {
-      await api.delete(`/api/courses/${courseId}`);
+      await axios.delete(`/api/courses/${courseId}`);
       toast.success('Course deleted successfully');
       fetchAllCourses();
     } catch (error) {

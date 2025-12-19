@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api';
+import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
 import { toast } from 'react-toastify';
 
@@ -39,7 +39,7 @@ const MentorRegister = () => {
     }
 
     try {
-      await api.post('/api/auth/register-mentor', {
+      await axios.post('/api/auth/register-mentor', {
         name: formData.name,
         email: formData.email,
         password: formData.password,

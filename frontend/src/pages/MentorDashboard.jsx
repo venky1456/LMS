@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import './MentorDashboard.css';
@@ -35,7 +35,7 @@ const MentorDashboard = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await api.get('/api/courses/my');
+      const response = await axios.get('/api/courses/my');
       setCourses(response.data);
     } catch (error) {
       toast.error('Failed to fetch courses');
@@ -47,7 +47,7 @@ const MentorDashboard = () => {
 
   const fetchStudents = async () => {
     try {
-      const response = await api.get('/api/users/students');
+      const response = await axios.get('/api/users/students');
       setStudents(response.data || []);
     } catch (error) {
       console.error('Failed to fetch students:', error);
@@ -64,7 +64,7 @@ const MentorDashboard = () => {
         description: newCourse.description,
         // category is UI-only for now; not sent to backend to avoid schema changes
       };
-      const response = await api.post('/api/courses', payload);
+      const response = await axios.post('/api/courses', payload);
       setCourses([...courses, response.data]);
       setCreatedCourse(response.data);
       toast.success('Course created successfully!');
@@ -80,7 +80,7 @@ const MentorDashboard = () => {
     }
 
     try {
-      await api.delete(`/api/courses/${courseId}`);
+      await axios.delete(`/api/courses/${courseId}`);
       setCourses(courses.filter((course) => course._id !== courseId));
       toast.success('Course deleted successfully!');
     } catch (error) {
@@ -100,7 +100,7 @@ const MentorDashboard = () => {
     }
 
     try {
-      await api.post(`/api/courses/${selectedCourse._id}/assign`, {
+      await axios.post(`/api/courses/${selectedCourse._id}/assign`, {
         studentIds: studentIds,
       });
       toast.success('Course assigned successfully!');

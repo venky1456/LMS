@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../api';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 
 const StudentDashboard = () => {
@@ -16,7 +16,7 @@ const StudentDashboard = () => {
 
   const fetchCourses = async () => {
     try {
-      const response = await api.get('/api/courses/my');
+      const response = await axios.get('/api/courses/my');
       setCourses(response.data);
     } catch (error) {
       toast.error('Failed to fetch courses');
@@ -28,7 +28,7 @@ const StudentDashboard = () => {
 
   const fetchProgress = async () => {
     try {
-      const response = await api.get('/api/progress/my');
+      const response = await axios.get('/api/progress/my');
       setProgress(response.data);
     } catch (error) {
       console.error('Failed to fetch progress:', error);
@@ -41,7 +41,7 @@ const StudentDashboard = () => {
 
   const handleDownloadCertificate = async (courseId) => {
     try {
-      const response = await api.get(`/api/certificates/${courseId}`, {
+      const response = await axios.get(`/api/certificates/${courseId}`, {
         responseType: 'blob',
       });
       

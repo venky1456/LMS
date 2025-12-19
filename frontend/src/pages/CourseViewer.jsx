@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import api from '../api';
+import axios from 'axios';
 import { toast } from 'react-toastify';
 import ChapterViewer from '../components/ChapterViewer';
 
@@ -20,9 +20,9 @@ const CourseViewer = () => {
   const fetchCourseData = async () => {
     try {
       const [courseRes, chaptersRes, progressRes] = await Promise.all([
-        api.get(`/api/courses/${courseId}`),
-        api.get(`/api/courses/${courseId}/chapters`),
-        api.get(`/api/progress/course/${courseId}`),
+        axios.get(`/api/courses/${courseId}`),
+        axios.get(`/api/courses/${courseId}/chapters`),
+        axios.get(`/api/progress/course/${courseId}`),
       ]);
 
       setCourse(courseRes.data);
@@ -47,7 +47,7 @@ const CourseViewer = () => {
     try {
       // Try direct chapter route first, fallback to finding in chapters array
       try {
-        const response = await api.get(`/api/chapters/${chapterId}`);
+        const response = await axios.get(`/api/chapters/${chapterId}`);
         setSelectedChapter(response.data);
       } catch (err) {
         // If direct route fails, find chapter in already fetched chapters
@@ -76,11 +76,11 @@ const CourseViewer = () => {
     if (!selectedChapter) return;
 
     try {
-      await api.post(`/api/progress/${selectedChapter._id}/complete`);
+      await axios.post(`/api/progress/${selectedChapter._id}/complete`);
       toast.success('Chapter marked as complete!');
       
       // Refresh progress and chapters
-      const progressRes = await api.get(`/api/progress/course/${courseId}`);
+      const progressRes = await axios.get(`/api/progress/course/${courseId}`);
       setProgress(progressRes.data);
       
       // Update chapter status
