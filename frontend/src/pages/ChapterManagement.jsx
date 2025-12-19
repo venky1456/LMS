@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api';
 import { toast } from 'react-toastify';
 
 const ChapterManagement = () => {
@@ -25,8 +25,8 @@ const ChapterManagement = () => {
   const fetchCourseData = async () => {
     try {
       const [courseRes, chaptersRes] = await Promise.all([
-        axios.get(`/api/courses/${courseId}`),
-        axios.get(`/api/courses/${courseId}/chapters`),
+        api.get(`/api/courses/${courseId}`),
+        api.get(`/api/courses/${courseId}/chapters`),
       ]);
 
       setCourse(courseRes.data);
@@ -49,7 +49,7 @@ const ChapterManagement = () => {
   const handleCreateChapter = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`/api/courses/${courseId}/chapters`, newChapter);
+      const response = await api.post(`/api/courses/${courseId}/chapters`, newChapter);
       setChapters([...chapters, response.data]);
       setNewChapter({
         title: '',
@@ -71,7 +71,7 @@ const ChapterManagement = () => {
     }
 
     try {
-      await axios.delete(`/api/chapters/${chapterId}`);
+      await api.delete(`/api/chapters/${chapterId}`);
       setChapters(chapters.filter(ch => ch._id !== chapterId));
       toast.success('Chapter deleted successfully!');
     } catch (error) {
